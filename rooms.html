@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Rooms</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #8B4513;
+            --secondary-color: #D4C4B5;
+            --background-color: #FFF8F0;
+            --text-color: #4A3728;
+            --white: #FFFFFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: var(--white);
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-size: 1.8em;
+            text-decoration: none;
+        }
+
+        .main-content {
+            margin-top: 100px;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hotel-info {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .hotel-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .room-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .room-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .room-details {
+            padding: 20px;
+        }
+
+        .room-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .room-amenities {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
+        .amenity {
+            background: var(--background-color);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .room-price {
+            font-size: 1.2em;
+            font-weight: 500;
+            margin: 15px 0;
+        }
+
+        .book-btn {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .book-btn:hover {
+            background-color: #A0522D;
+        }
+
+        .booking-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-modal {
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .booking-form input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <a href="index.html" class="logo">Global Hotels</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="hotel-info">
+            <h1 class="hotel-name" id="hotelName">Loading...</h1>
+            <p class="hotel-location" id="hotelLocation">Loading...</p>
+        </div>
+
+        <div class="rooms-grid" id="roomsList">
+            <!-- Rooms will be dynamically added here -->
+        </div>
+    </div>
+
+    <div class="booking-modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book Room</h2>
+                <span class="close-modal" onclick="closeBookingModal()">&times;</span>
+            </div>
+            <form class="booking-form" id="bookingForm">
+                <input type="date" id="checkInDate" required>
+                <input type="date" id="checkOutDate" required>
+                <input type="number" id="guests" placeholder="Number of Guests" min="1" required>
+                <button type="submit" class="book-btn">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="rooms.js"></script>
+</body>
+</html>
